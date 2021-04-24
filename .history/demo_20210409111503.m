@@ -30,6 +30,28 @@ while 1
     time_vvc = time_vvc + interval;
     waitbar((time_hevc - sum(enc_time_hevc(1:i_hevc))) / enc_time_hevc(i_hevc + 1), waitbar_hevc, strcat('(H.265/HEVC) Encoding Frame ', num2str(i_hevc)), 'Name', 'Encoding (H.265/HEVC)')
     waitbar((time_vvc - sum(enc_time_vvc(1:i_vvc))) / enc_time_vvc(i_vvc + 1), waitbar_vvc, strcat('(H.266/VVC) Encoding Frame ', num2str(i_vvc)), 'Name', 'Encoding (H.266/VVC)')
+    subplot(2, 4, 4)
+    set(gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None', 'xtick', [], 'xticklabel', [], 'ytick', [], 'yticklabel', [])
+    text_hevc{1} = '(H.265) Proposed Algorithm vs Basic';
+    text_hevc{2} = '';
+    text_hevc{3} = '';
+    text_hevc{4} = '';
+    text_hevc{5} = '';
+    text_hevc{6} = "          Frame: ";
+    text_hevc{7} = "       Enc Time: ";
+    text_hevc{8} = "Bit-rate Saving: ";
+    t_hevc = text(0, 0.5, text_hevc, 'FontSize', 14, 'FontName', 'courier', 'FontWeight', 'bold', 'Color', 'Red');
+    subplot(2, 4, 8)
+    set(gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None', 'xtick', [], 'xticklabel', [], 'ytick', [], 'yticklabel', [])
+    text_vvc{1} = '(H.266) Proposed Algorithm vs Basic';
+    text_vvc{2} = '';
+    text_vvc{3} = '';
+    text_vvc{4} = '';
+    text_vvc{5} = '';
+    text_vvc{6} = "          Frame: ";
+    text_vvc{7} = "       Enc Time: ";
+    text_vvc{8} = "Bit-rate Saving: ";
+    t_vvc = text(0, 0.5, text_vvc, 'FontSize', 14, 'FontName', 'courier', 'FontWeight', 'bold', 'Color', 'Red');
 
     if (time_hevc >= sum(enc_time_hevc(1:i_hevc + 1)))
         subplot(2, 4, 2)
@@ -40,9 +62,7 @@ while 1
         title('H.265 + Proposed Algorithm')
         subplot(2, 4, 4)
         set(gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None', 'xtick', [], 'xticklabel', [], 'ytick', [], 'yticklabel', [])
-        if exist('t_hevc')
-            delete(t_hevc);
-        end
+        delete(t_hevc);
         text_hevc{1} = '(H.265) Proposed Algorithm vs Basic';
         text_hevc{2} = '';
         text_hevc{3} = '';
@@ -64,9 +84,7 @@ while 1
         title('H.266 + Proposed Algorithm')
         subplot(2, 4, 8)
         set(gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None', 'xtick', [], 'xticklabel', [], 'ytick', [], 'yticklabel', [])
-        if exist('t_vvc')
-            delete(t_vvc);
-        end
+        delete(t_vvc);
         text_vvc{1} = '(H.266) Proposed Algorithm vs Basic';
         text_vvc{2} = '';
         text_vvc{3} = '';

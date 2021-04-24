@@ -40,7 +40,7 @@ while 1
         title('H.265 + Proposed Algorithm')
         subplot(2, 4, 4)
         set(gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None', 'xtick', [], 'xticklabel', [], 'ytick', [], 'yticklabel', [])
-        if exist('t_hevc')
+        if (t_hevc)
             delete(t_hevc);
         end
         text_hevc{1} = '(H.265) Proposed Algorithm vs Basic';
@@ -64,9 +64,7 @@ while 1
         title('H.266 + Proposed Algorithm')
         subplot(2, 4, 8)
         set(gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None', 'xtick', [], 'xticklabel', [], 'ytick', [], 'yticklabel', [])
-        if exist('t_vvc')
-            delete(t_vvc);
-        end
+        delete(t_vvc);
         text_vvc{1} = '(H.266) Proposed Algorithm vs Basic';
         text_vvc{2} = '';
         text_vvc{3} = '';
