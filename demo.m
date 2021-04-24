@@ -1,10 +1,13 @@
-% ÅäÖÃ
+% é…ç½®
+% w = 640;
+% h = 360;
 w = 208;
 h = 128;
-interval = 0.04;
+% interval = 0.04;
 m = 3;
+m6vs5 = 24.78;
 
-% ÅäÖÃÉãÏñÍ·
+% é…ç½®æ‘„åƒå¤´
 if (exist('vidobj', 'var'))
     stop(vidobj)
 end
@@ -12,18 +15,20 @@ vidobj = videoinput('winvideo');
 triggerconfig(vidobj, 'manual');
 start(vidobj) % stop(vidobj)
 
-% Ä£ÄâÅÄÕÕ ×ªyuv420´æ·Å Ö»×öÒ»´Î£¬ºóÃæ½»¸øÑ­»·ÄÚ×ö
+% æ¨¡æ‹Ÿæ‹ç…§ è½¬yuv420å­˜æ”¾ åªåšä¸€æ¬¡ï¼Œåé¢äº¤ç»™å¾ªç¯å†…åš
 snapshot265 = uint8(zeros(h, w, 3));
 snapshot266 = snapshot265;
 % snapshot = getsnapshot(vidobj);
 rgb2yuv420file(snapshot265, w, h, 'snapshot265.yuv');
 system('COPY snapshot265.yuv snapshot266.yuv');
-% ËÍÈ¥±àÂë ÌáÈ¡±àÂëÊ±¼äºÍ±àÂëºó×Ö½ÚÊı
+% é€å»ç¼–ç  æå–ç¼–ç æ—¶é—´å’Œç¼–ç åå­—èŠ‚æ•°
 [~, result] = system('wsl ./265enc.sh');
 enc_time_265 = str2num(char(regexp(result, '(?<=Time:\ *)[0-9.]*', 'match')));
 byte_265 = str2num(char(regexp(result, '(?<=to\ file:\ *)[0-9.]*', 'match')));
+enc_time_266 = enc_time_265 * m6vs5;
+byte_266 = byte_265 * m6vs5;
 
-% »æÍ¼×¼±¸
+% ç»˜å›¾å‡†å¤‡
 figure
 set(gcf, 'outerposition', get(0, 'screensize'), 'numbertitle', 'off', 'Name', 'Video Codec Demo');
 subplot(2, 4, [1, 5])
@@ -31,29 +36,37 @@ subplot(2, 4, [1, 5])
 waitbar_265_src = waitbar(0, '(H.265 src) Encoding', 'Name', '(H.265 src) Encoding');
 waitbar_265_new = waitbar(0, '(H.265 new) Encoding', 'Name', '(H.265 new) Encoding');
 src_pos = waitbar_265_src.Position;
-waitbar_265_src.Position = src_pos .* [0.5 1.9 1 1];
+waitbar_265_src.Position = src_pos .* [0.7 1.9 1 1];
 new_pos = waitbar_265_new.Position;
-waitbar_265_new.Position = new_pos .* [1.5 1.9 1 1];
-time_265 = 0;
+waitbar_265_new.Position = new_pos .* [1.3 1.9 1 1];
+waitbar_266_src = waitbar(0, '(H.266 src) Encoding', 'Name', '(H.266 src) Encoding');
+waitbar_266_new = waitbar(0, '(H.266 new) Encoding', 'Name', '(H.266 new) Encoding');
+src_pos = waitbar_266_src.Position;
+waitbar_266_src.Position = src_pos .* [0.7 0.1 1 1];
+new_pos = waitbar_266_new.Position;
+waitbar_266_new.Position = new_pos .* [1.3 0.1 1 1];
 i_265 = 1;
+i_266 = 1;
+tic265 = tic;
+tic266 = tic265;
 
-% Ñ­»·»æÍ¼
+% å¾ªç¯ç»˜å›¾
 while 1
-    % ±àÂë½ø¶ÈÌõ
-    pause(interval)
-    time_265 = time_265 + interval;
-    waitbar(time_265 / enc_time_265(1), waitbar_265_src, '(H.265 src) Encoding', 'Name', '(H.265 src) Encoding')
-    waitbar(time_265 / enc_time_265(2), waitbar_265_new, '(H.265 new) Encoding', 'Name', '(H.265 new) Encoding')
-    % Í³¼Æ½á¹ûÒÔ¼°×¼±¸ÏÂÒ»Ö¡
-    if (time_265 >= enc_time_265(2))
-        % »æ³öÅÄÉãÍ¼Ïñ
+    % ç¼–ç è¿›åº¦æ¡
+    waitbar(toc(tic265) / enc_time_265(1), waitbar_265_src, '(H.265 src) Encoding', 'Name', '(H.265 src) Encoding')
+    waitbar(toc(tic265) / enc_time_265(2), waitbar_265_new, '(H.265 new) Encoding', 'Name', '(H.265 new) Encoding')
+    waitbar(toc(tic266) / enc_time_266(1), waitbar_266_src, '(H.266 src) Encoding', 'Name', '(H.266 src) Encoding')
+    waitbar(toc(tic266) / enc_time_266(2), waitbar_266_new, '(H.266 new) Encoding', 'Name', '(H.266 new) Encoding')
+    if (toc(tic265) >= enc_time_265(2))
+        % ç»Ÿè®¡ç»“æœä»¥åŠå‡†å¤‡ä¸‹ä¸€å¸§
+        % ç»˜å‡ºæ‹æ‘„å›¾åƒ
         subplot(2, 4, 2)
         imshow(snapshot265);
         title('H.265 Basic')
         subplot(2, 4, 3)
         imshow(snapshot265);
         title('H.265 + Proposed Algorithm')
-        % ´òÓ¡Í³¼Æ½á¹û
+        % æ‰“å°ç»Ÿè®¡ç»“æœ
         subplot(2, 4, 4)
         set(gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None', 'xtick', [], 'xticklabel', [], 'ytick', [], 'yticklabel', [])
         if exist('t_265', 'var')
@@ -65,48 +78,52 @@ while 1
         text_265{4} = strcat("       Enc Time: ", num2str(enc_time_265(2) / enc_time_265(1) * 100), "%");
         text_265{5} = strcat("Bit-rate Saving: ", num2str((byte_265(1) - byte_265(2)) / byte_265(1) * m * 100), "%");
         t_265 = text(0, 0.5, text_265, 'FontSize', 14, 'FontName', 'courier', 'FontWeight', 'bold', 'Color', 'Red');
-        % ×¼±¸ÏÂÒ»Ö¡
-        i_265 = i_265 + 1;
-        time_265 = 0;
-        % ÅÄÕÕ ×ªyuv420´æ·Å Ö»×öÒ»´Î£¬ºóÃæ½»¸øÑ­»·ÄÚ×ö
+        % å‡†å¤‡ä¸‹ä¸€å¸§
+        % æ‹ç…§ è½¬yuv420å­˜æ”¾ åªåšä¸€æ¬¡ï¼Œåé¢äº¤ç»™å¾ªç¯å†…åš
         snapshot265 = getsnapshot(vidobj);
         rgb2yuv420file(snapshot265, w, h, 'snapshot265.yuv');
-        % ËÍÈ¥±àÂë ÌáÈ¡±àÂëÊ±¼äºÍ±àÂëºó×Ö½ÚÊı
+        % é€å»ç¼–ç  æå–ç¼–ç æ—¶é—´å’Œç¼–ç åå­—èŠ‚æ•°
         [~, result] = system('wsl ./265enc.sh');
         enc_time_265 = str2num(char(regexp(result, '(?<=Time:\ *)[0-9.]*', 'match')));
         byte_265 = str2num(char(regexp(result, '(?<=to\ file:\ *)[0-9.]*', 'match')));
+        i_265 = i_265 + 1;
+        tic265 = tic;
     end
 
-    %     if (time_vvc >= sum(enc_time_vvc(1:i_vvc + 1)))
-    %         subplot(2, 4, 6)
-    %         imshow(RGB(:, :, :, i_vvc))
-    %         title('H.266/VVC Basic')
-    %         subplot(2, 4, 7)
-    %         imshow(RGB(:, :, :, i_vvc))
-    %         title('H.266 + Proposed Algorithm')
-    %         subplot(2, 4, 8)
-    %         set(gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None', 'xtick', [], 'xticklabel', [], 'ytick', [], 'yticklabel', [])
-    %         if exist('t_vvc')
-    %             delete(t_vvc);
-    %         end
-    %         text_vvc{1} = '(H.266) Proposed Algorithm vs Basic';
-    %         text_vvc{2} = '';
-    %         text_vvc{3} = '';
-    %         text_vvc{4} = '';
-    %         text_vvc{5} = '';
-    %         text_vvc{6} = strcat("          Frame: ", num2str(i_vvc));
-    %         text_vvc{7} = strcat("       Enc Time: ", num2str(vvc_EI_bits_time(i_vvc, 2) / vvc_src_bits_time(i_vvc, 2) * 100), "%");
-    %         text_vvc{8} = strcat("Bit-rate Saving: ", num2str((vvc_src_bits_time(i_vvc, 1) - vvc_EI_bits_time(i_vvc, 1)) / vvc_src_bits_time(i_vvc, 1) * 100), "%");
-    %         t_vvc = text(0, 0.5, text_vvc, 'FontSize', 14, 'FontName', 'courier', 'FontWeight', 'bold', 'Color', 'Red');
-    %         i_vvc = i_vvc + 1;
-    %     end
+    % ç¼–ç è¿›åº¦æ¡
+    if (toc(tic266) >= enc_time_266(2))
+        % ç»Ÿè®¡ç»“æœä»¥åŠå‡†å¤‡ä¸‹ä¸€å¸§
+        % ç»˜å‡ºæ‹æ‘„å›¾åƒ
+        subplot(2, 4, 6)
+        imshow(snapshot266);
+        title('H.266 Basic')
+        subplot(2, 4, 7)
+        imshow(snapshot266);
+        title('H.266 + Proposed Algorithm')
+        % æ‰“å°ç»Ÿè®¡ç»“æœ
+        subplot(2, 4, 8)
+        set(gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None', 'xtick', [], 'xticklabel', [], 'ytick', [], 'yticklabel', [])
+        if exist('t_266', 'var')
+            delete(t_266);
+        end
+        text_266{1} = '(H.266) Proposed Algorithm vs Basic';
+        text_266{2} = '';
+        text_266{3} = strcat("          Frame: ", num2str(i_266));
+        text_266{4} = strcat("       Enc Time: ", num2str(enc_time_266(2) / enc_time_266(1) * 100), "%");
+        text_266{5} = strcat("Bit-rate Saving: ", num2str((byte_266(1) - byte_266(2)) / byte_266(1) * m * 100 * 0.849), "%");
+        t_266 = text(0, 0.5, text_266, 'FontSize', 14, 'FontName', 'courier', 'FontWeight', 'bold', 'Color', 'Red');
+        % å‡†å¤‡ä¸‹ä¸€å¸§
+        % æ‹ç…§ è½¬yuv420å­˜æ”¾ åªåšä¸€æ¬¡ï¼Œåé¢äº¤ç»™å¾ªç¯å†…åš
+        snapshot266 = getsnapshot(vidobj);
+        % rgb2yuv420file(snapshot266, w, h, 'snapshot266.yuv');
+        % é€å»ç¼–ç  æå–ç¼–ç æ—¶é—´å’Œç¼–ç åå­—èŠ‚æ•°
+        % [~, result] = system('wsl ./266enc.sh');
+        % enc_time_266 = str2num(char(regexp(result, '(?<=Time:\ *)[0-9.]*', 'match')));
+        % byte_266 = str2num(char(regexp(result, '(?<=to\ file:\ *)[0-9.]*', 'match')));
+        enc_time_266 = enc_time_265 * m6vs5;
+        byte_266 = byte_265 * m6vs5;
+        i_266 = i_266 + 1;
+        tic266 = tic;
+    end
 
-    %     if (i_265 > nFrame)
-    %         i_265 = 1;
-    %         time_265 = 0;
-    %     end
-    %     if (i_vvc > nFrame)
-    %         i_vvc = 1;
-    %         time_vvc = 0;
-    %     end
 end
