@@ -1,5 +1,5 @@
 function rgb2yuv420file(rgb, w, h, filename)
-    rgb = imresize(rgb, [h, w], 'nearest'); % bilinear/bicubic
+    rgb = imresize(rgb, [h, w], 'bilinear'); % nearest/bilinear/bicubic
     yuvimg = rgb2ycbcr(rgb);
 
     Y = reshape(yuvimg(:, :, 1)', 1, []);

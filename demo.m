@@ -3,8 +3,6 @@
 % h = 360;
 w = 208;
 h = 128;
-% interval = 0.04;
-m = 3;
 m6vs5 = 24.78;
 
 % 配置摄像头
@@ -55,8 +53,6 @@ while 1
     % 编码进度条
     waitbar(toc(tic265) / enc_time_265(1), waitbar_265_src, '(H.265 src) Encoding', 'Name', '(H.265 src) Encoding')
     waitbar(toc(tic265) / enc_time_265(2), waitbar_265_new, '(H.265 new) Encoding', 'Name', '(H.265 new) Encoding')
-    waitbar(toc(tic266) / enc_time_266(1), waitbar_266_src, '(H.266 src) Encoding', 'Name', '(H.266 src) Encoding')
-    waitbar(toc(tic266) / enc_time_266(2), waitbar_266_new, '(H.266 new) Encoding', 'Name', '(H.266 new) Encoding')
     if (toc(tic265) >= enc_time_265(2))
         % 统计结果以及准备下一帧
         % 绘出拍摄图像
@@ -76,7 +72,7 @@ while 1
         text_265{2} = '';
         text_265{3} = strcat("          Frame: ", num2str(i_265));
         text_265{4} = strcat("       Enc Time: ", num2str(enc_time_265(2) / enc_time_265(1) * 100), "%");
-        text_265{5} = strcat("Bit-rate Saving: ", num2str((byte_265(1) - byte_265(2)) / byte_265(1) * m * 100), "%");
+        text_265{5} = strcat("Bit-rate Saving: ", num2str((byte_265(1) - byte_265(2)) / byte_265(1) * 100), "%");
         t_265 = text(0, 0.5, text_265, 'FontSize', 14, 'FontName', 'courier', 'FontWeight', 'bold', 'Color', 'Red');
         % 准备下一帧
         % 拍照 转yuv420存放 只做一次，后面交给循环内做
@@ -91,6 +87,8 @@ while 1
     end
 
     % 编码进度条
+    waitbar(toc(tic266) / enc_time_266(1), waitbar_266_src, '(H.266 src) Encoding', 'Name', '(H.266 src) Encoding')
+    waitbar(toc(tic266) / enc_time_266(2), waitbar_266_new, '(H.266 new) Encoding', 'Name', '(H.266 new) Encoding')
     if (toc(tic266) >= enc_time_266(2))
         % 统计结果以及准备下一帧
         % 绘出拍摄图像
@@ -110,7 +108,7 @@ while 1
         text_266{2} = '';
         text_266{3} = strcat("          Frame: ", num2str(i_266));
         text_266{4} = strcat("       Enc Time: ", num2str(enc_time_266(2) / enc_time_266(1) * 100), "%");
-        text_266{5} = strcat("Bit-rate Saving: ", num2str((byte_266(1) - byte_266(2)) / byte_266(1) * m * 100 * 0.849), "%");
+        text_266{5} = strcat("Bit-rate Saving: ", num2str((byte_266(1) - byte_266(2)) / byte_266(1) * 100 * 0.849), "%");
         t_266 = text(0, 0.5, text_266, 'FontSize', 14, 'FontName', 'courier', 'FontWeight', 'bold', 'Color', 'Red');
         % 准备下一帧
         % 拍照 转yuv420存放 只做一次，后面交给循环内做
@@ -119,7 +117,7 @@ while 1
         % 送去编码 提取编码时间和编码后字节数
         % [~, result] = system('wsl ./266enc.sh');
         % enc_time_266 = str2num(char(regexp(result, '(?<=Time:\ *)[0-9.]*', 'match')));
-        % byte_266 = str2num(char(regexp(result, '(?<=to\ file:\ *)[0-9.]*', 'match')));
+        % byte_266 = str2num(char(regexp(result, '[0-9.]*(?=\ bits\ \[)', 'match')));
         enc_time_266 = enc_time_265 * m6vs5;
         byte_266 = byte_265 * m6vs5;
         i_266 = i_266 + 1;
