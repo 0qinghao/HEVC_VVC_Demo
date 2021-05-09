@@ -77,6 +77,7 @@ while 1
         % 准备下一帧
         % 拍照 转yuv420存放 只做一次，后面交给循环内做
         snapshot265 = getsnapshot(vidobj);
+        snapshot265 = fliplr(snapshot265);
         rgb2yuv420file(snapshot265, w, h, 'snapshot265.yuv');
         % 送去编码 提取编码时间和编码后字节数
         [~, result] = system('wsl ./265enc.sh');
