@@ -10,8 +10,8 @@ width=256;
 height=128;
 s.BaudRate = 1500000;
 s.BytesAvailableFcnCount = width*height*1.5;
-s.InputBufferSize = 7000000;
-s.OutputBufferSize = 7000000;
+s.InputBufferSize = 70000;
+s.OutputBufferSize = 70000;
 s.ReadAsyncMode = 'continuous';
 s.Parity = 'none';
 s.StopBits = 1;
@@ -31,9 +31,10 @@ while(1)
         if(s.BytesAvailable>=49152)
             rec = fread(s, s.BytesAvailable, 'uint8');
     %         fwrite(fid, [Y, Uds, Vds]);
-            imshow(ycbcr2rgb(snapshot265))
-            a = input('Accept this graph (y/n)? ','s')            
-            if ~isempty(a)
+            imshow(ycbcr2rgb(snapshot265), 'InitialMagnification', 400, 'Border','tight')
+            w = waitforbuttonpress;
+%             a = input('Accept this graph (y/n)? ','s');
+            if ~isempty(w)
                 break;
             end
         end
