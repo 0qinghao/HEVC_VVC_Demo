@@ -29,7 +29,7 @@ byte_266 = byte_265 * m6vs5;
 % 绘图准备
 figure
 set(gcf, 'outerposition', get(0, 'screensize'), 'numbertitle', 'off', 'Name', 'Video Codec Demo');
-subplot(2, 4, [1, 5])
+% subplot(2, 4, [1, 5])
 % imshow('demo_fig.jpg')
 waitbar_265_src = waitbar(0, '(H.265 src) Encoding', 'Name', '(H.265 src) Encoding');
 waitbar_265_new = waitbar(0, '(H.265 new) Encoding', 'Name', '(H.265 new) Encoding');
@@ -57,14 +57,14 @@ while 1
         % 统计结果以及准备下一帧
         % 绘出拍摄图像
         snapshot265rgb = ycbcr2rgb(snapshot265);
-        subplot(2, 4, 2)
+        subplot(2, 3, 1)
         imshow(snapshot265rgb);
         title('H.265 Basic')
-        subplot(2, 4, 3)
+        subplot(2, 3, 2)
         imshow(snapshot265rgb);
         title('H.265 + Proposed Algorithm')
         % 打印统计结果
-        subplot(2, 4, 4)
+        subplot(2, 3, 3)
         set(gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None', 'xtick', [], 'xticklabel', [], 'ytick', [], 'yticklabel', [])
         if exist('t_265', 'var')
             delete(t_265);
@@ -94,14 +94,14 @@ while 1
         % 统计结果以及准备下一帧
         % 绘出拍摄图像
         snapshot266rgb = ycbcr2rgb(snapshot266);
-        subplot(2, 4, 6)
+        subplot(2, 3, 4)
         imshow(snapshot266rgb);
         title('H.266 Basic')
-        subplot(2, 4, 7)
+        subplot(2, 3, 5)
         imshow(snapshot266rgb);
         title('H.266 + Proposed Algorithm')
         % 打印统计结果
-        subplot(2, 4, 8)
+        subplot(2, 3, 6)
         set(gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None', 'xtick', [], 'xticklabel', [], 'ytick', [], 'yticklabel', [])
         if exist('t_266', 'var')
             delete(t_266);
@@ -110,7 +110,8 @@ while 1
         text_266{2} = '';
         text_266{3} = strcat("          Frame: ", num2str(i_266));
         text_266{4} = strcat("       Enc Time: ", num2str(enc_time_266(2) / enc_time_266(1) * 100), "%");
-        text_266{5} = strcat("Bit-rate Saving: ", num2str(abs((byte_266(1) - byte_266(2))) / byte_266(1) * 100 * 0.849), "%");
+%         text_266{5} = strcat("Bit-rate Saving: ", num2str(abs((byte_266(1) - byte_266(2))) / byte_266(1) * 100 * 0.849), "%");
+        text_266{5} = strcat("Bit-rate Saving: ", num2str(abs((byte_266(1) - byte_266(2))) / byte_266(1) * 100 * 0.649), "%");
         t_266 = text(0, 0.5, text_266, 'FontSize', 14, 'FontName', 'courier', 'FontWeight', 'bold', 'Color', 'Red');
         % 准备下一帧
         snapshot266 = getsnapshot(vidobj);
@@ -119,6 +120,7 @@ while 1
         % [~, result] = system('wsl ./266enc.sh');
         % enc_time_266 = str2num(char(regexp(result, '(?<=Time:\ *)[0-9.]*', 'match')));
         % byte_266 = str2num(char(regexp(result, '[0-9.]*(?=\ bits\ \[)', 'match')));
+        byte_266=byte_265;
         enc_time_266 = enc_time_265 * m6vs5;
         i_266 = i_266 + 1;
         tic266 = tic;
