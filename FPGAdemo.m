@@ -31,7 +31,7 @@ while(1)
         if(s.BytesAvailable>=49152)
             rec = fread(s, s.BytesAvailable, 'uint8');
     %         fwrite(fid, [Y, Uds, Vds]);
-            imshow(ycbcr2rgb(snapshot265), 'InitialMagnification', 400, 'Border','tight')
+            imshow(ycbcr2rgb(snapshot265), 'InitialMagnification', 800, 'Border','tight')
             w = waitforbuttonpress;
 %             a = input('Accept this graph (y/n)? ','s');
             if ~isempty(w)
